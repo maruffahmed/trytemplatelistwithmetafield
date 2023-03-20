@@ -1,0 +1,83 @@
+{{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}
+    px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}
+    px;
+  }
+  .d-block {
+    display: block;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 3rem;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+  }
+  .card .card-img {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  }
+  .card .card-img img {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}
+      px;
+      padding-bottom: {{ section.settings.padding_bottom }}
+      px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="contact page-width section-{{ section.id }}-padding">
+  {% comment %} {%- if section.settings.heading != blank -%}
+  <h2 class="title title-wrapper--no-top-margin inline-richtext {{ section.settings.heading_size }}">
+  {{ section.settings.heading }}
+  </h2>
+  {%- else -%}
+  <h2 class="visually-hidden">{{ 'templates.contact.form.title' | t }}</h2>
+  {%- endif -%} {% endcomment %}<div class="grid">
+    {% for page in pages %}
+      {% if page.metafields.custom.page_type == "Template" %}
+        <div class="card">
+          <div class="card-img">
+            <a href={{page.url}}>
+              <img src={{page.metafields.custom.template_feature_image | img_url: 'large'}}" alt={{page.title}}">
+            </a>
+          </div>
+          <a href={{page.url}}>{{ page.title }}</a>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Templates",
+    "tag": "section",
+    "class": "section",
+    "disabled_on": {
+      "groups": ["header", "footer"]
+    },
+    "settings": [],
+    "presets": [
+      {
+        "name": "Templates"
+      }
+    ]
+  }
+{% endschema %}
