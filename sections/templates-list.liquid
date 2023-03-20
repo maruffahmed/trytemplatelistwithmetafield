@@ -92,19 +92,22 @@
 
 
 <div class="templates-page page-width section-{{ section.id }}-padding" x-data="{
-                                                    categories: [],
-                                                    selectedCat : 'all',
-                                                    addNewCategory(category) {
-                                                      this.categories.push(category);
-                                                    },
-                                                    filterCategories() {
-                                                      if(this.selectedCat == 'all') {
-                                                        return this.categories;
-                                                      } else {
-                                                        return this.categories.filter(cat => cat.title == this.selectedCat);
-                                                      }
-                                                    }
-                                                    }">{% for page in pages %}
+      categories: [],
+      selectedCat : 'all',
+      addNewCategory(category) {
+        this.categories.push(category);
+      },
+      filterCategories() {
+        if(this.selectedCat == 'all') {
+          return this.categories;
+        } else {
+          return this.categories.filter(cat => cat.title == this.selectedCat);
+        }
+      },
+      uniqueCategories() {
+        return this.categories.filter((v,i,a)=>a.findIndex(v2=>(v2.title===v.title))===i)
+      }
+      }">{% for page in pages %}
     {% if page.metafields.custom.template_name == "Home" %}
       <p x-init="addNewCategory({title : '{{ page.metafields.custom.page_type }}', url :'{{ page.url }}', featureImg : '{{page.metafields.custom.template_feature_image | img_url: 'large'}}' })"></p>
     {% endif %}
@@ -121,7 +124,7 @@
   <div class="templates-filter">
     <select x-model="selectedCat" @change="selectedCat = $event.target.options[$event.target.selectedIndex].value; ">
       <option value="all" :selected="selectedCat === 'all'">All</option>
-      <template x-for="cat in categories">
+      <template x-for="cat in uniqueCategories()">
         <option
           :key="cat.title"
           :value="cat.title"
